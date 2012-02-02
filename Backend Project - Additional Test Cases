@@ -1,0 +1,90 @@
+
+
+-------------------------------------------------------------------------------
+Bonus: Offline Editing Test Case
+-------------------------------------------------------------------------------
+
+- Device 1 Input: POST_params['sources'] =   # Sync time 1323721900
+[
+  {
+    'title': 'A',
+    'feed_url': 'http://a.com/feed'
+    'updated': '1323721899'
+  },
+  {
+    'title': 'B',
+    'feed_url': 'http://b.com/feed'
+    'updated': '1323721872'
+  }
+]
+
+
+- Device 2 (offline edited) Input: POST_params['sources'] =   # Sync time 1323721901
+[
+  {
+    'title': 'A',
+    'feed_url': 'http://a.com'
+    'updated': '1323721898'       # Later sync, but earlier edit than device 1
+  },
+  {
+    'title': 'B',
+    'feed_url': 'http://b.com'
+    'updated': '1323721900'       # Later sync and later edit than device 1
+  }
+]
+
+
+- Output: RESPONSE.content = 
+[
+  {
+    'title': 'A',
+    'feed_url': 'http://a.com/feed'
+    'updated': '1323721899'      
+  },
+  {
+    'title': 'B',
+    'feed_url': 'http://b.com'
+    'updated': '1323721900'
+  }
+]
+
+
+-------------------------------------------------------------------------------
+Bonus: Maintaining Positions Example Test Case
+-------------------------------------------------------------------------------
+
+Possible goals:
+1) Last updated/touched feed gets preference for position
+    > Note that the position is within a list, there are no "empty" positions
+2) Sources not getting the position they 'wanted' get placed at the end
+3) We add as many sources as possible (10 max sources)
+
+In the case of ties in terms of timestamp, either source could have preference.
+
+Input format: multiple lists, denoted by [] of tuples (source ID, timestamp)
+Output format: one list, denoted by [] of tuples(source ID, timestamp)
+
+Inputs: [{'title':'A', 'feed_url':'www.a.com', 'updated':'12'}], [{'title':'B', 'feed_url':'www.b.com', 'updated':'16'}]
+Output: [{'title':'B', 'feed_url':'www.b.com', 'updated':'16'}, {'title':'A', 'feed_url':'www.a.com', 'updated':'12'}]
+
+Inputs: [{'title':'A', 'feed_url':'www.a.com', 'updated':'12'}, {'title':'B', 'feed_url':'www.b.com', 'updated':'14'}], [{'title':'A', 'feed_url':'www.a.com', 'updated':'12'}, {'title':'C', 'feed_url':'www.c.com', 'updated':'13'}]
+Output: [{'title':'A', 'feed_url':'www.a.com', 'updated':'12'}, {'title':'B', 'feed_url':'www.b.com', 'updated':'14'}, {'title':'C', 'feed_url':'www.c.com', 'updated':'13'}]
+
+Inputs: [{'title':'A', 'feed_url':'www.a.com', 'updated':'12'}, {'title':'B', 'feed_url':'www.b.com', 'updated':'13'}], [{'title':'B', 'feed_url':'www.b.com', 'updated':'11'}, {'title':'A', 'feed_url':'www.a.com', 'updated':'14'}]
+Output: [{'title':'B', 'feed_url':'www.b.com', 'updated':'11'}, {'title':'A', 'feed_url':'www.a.com', 'updated':'14'}]
+
+Inputs: [{'title':'A', 'feed_url':'www.a.com', 'updated':'12'}, {'title':'B', 'feed_url':'www.b.com', 'updated':'13'}], [{'title':'B', 'feed_url':'www.b.com', 'updated':'14'}, {'title':'A', 'feed_url':'www.a.com', 'updated':'10'}]
+Output: [{'title':'B', 'feed_url':'www.b.com', 'updated':'14'}, {'title':'A', 'feed_url':'www.a.com', 'updated':'12'}]
+
+Inputs: [{'title':'A', 'feed_url':'www.a.com', 'updated':'12'}, {'title':'B', 'feed_url':'www.b.com', 'updated':'12'}, {'title':'C', 'feed_url':'www.c.com', 'updated':'14'}], [{'title':'A', 'feed_url':'www.a.com', 'updated':'12'}, {'title':'C', 'feed_url':'www.c.com', 'updated':'12'}, {'title':'B', 'feed_url':'www.b.com', 'updated':'13'}]
+Output: [{'title':'A', 'feed_url':'www.a.com', 'updated':'12'}, {'title':'B', 'feed_url':'www.b.com', 'updated':'13'}, {'title':'C', 'feed_url':'www.c.com', 'updated':'14'}]
+
+Inputs: [{'title':'A', 'feed_url':'www.a.com', 'updated':'9'}, {'title':'B', 'feed_url':'www.b.com', 'updated':'11'}], [{'title':'C', 'feed_url':'www.c.com', 'updated':'10'}, {'title':'D', 'feed_url':'www.d.com', 'updated':'8'}, {'title':'E', 'feed_url':'www.e.com', 'updated':'12'}]
+Output: [{'title':'C', 'feed_url':'www.c.com', 'updated':'10'}, {'title':'B', 'feed_url':'www.b.com', 'updated':'11'}, {'title':'E', 'feed_url':'www.e.com', 'updated':'12'}, {'title':'A', 'feed_url':'www.a.com', 'updated':'9'}, {'title':'D', 'feed_url':'www.d.com', 'updated':'8'}]
+
+Inputs: [{'title':'A', 'feed_url':'www.a.com', 'updated':'11'}, {'title':'B', 'feed_url':'www.b.com', 'updated':'12'}, {'title':'C', 'feed_url':'www.c.com', 'updated':'13'} ..., {'title':'H', 'feed_url':'www.h.com', 'updated':'18'}, {'title':'I', 'feed_url':'www.i.com', 'updated':'19'}, {'title':'J', 'feed_url':'www.j.com', 'updated':'20'}], [{'title':'A', 'feed_url':'www.a.com', 'updated':'11'}, {'title':'B', 'feed_url':'www.b.com', 'updated':'12'}, {'title':'C', 'feed_url':'www.c.com', 'updated':'13'} ..., {'title':'H', 'feed_url':'www.h.com', 'updated':'18'}, {'title':'X', 'feed_url':'www.x.com', 'updated':'24'}, {'title':'J', 'feed_url':'www.j.com', 'updated':'20'}]
+Outputs:  [{'title':'A', 'feed_url':'www.a.com', 'updated':'11'}, {'title':'B', 'feed_url':'www.b.com', 'updated':'12'}, {'title':'C', 'feed_url':'www.c.com', 'updated':'13'} ..., {'title':'H', 'feed_url':'www.h.com', 'updated':'18'}, {'title':'X', 'feed_url':'www.x.com', 'updated':'24'}, {'title':'J', 'feed_url':'www.j.com', 'updated':'20'}]
+
+Inputs: [{'title':'A', 'feed_url':'www.a.com', 'updated':'11'}, {'title':'B', 'feed_url':'www.b.com', 'updated':'12'}, {'title':'C', 'feed_url':'www.c.com', 'updated':'13'} ..., {'title':'H', 'feed_url':'www.h.com', 'updated':'18'}, {'title':'I', 'feed_url':'www.i.com', 'updated':'19'}, {'title':'J', 'feed_url':'www.j.com', 'updated':'20'}], [{'title':'A', 'feed_url':'www.a.com', 'updated':'11'}, {'title':'B', 'feed_url':'www.b.com', 'updated':'12'}, {'title':'C', 'feed_url':'www.c.com', 'updated':'13'} ..., {'title':'H', 'feed_url':'www.h.com', 'updated':'18'}, {'title':'X', 'feed_url':'www.x.com', 'updated':'24'}, {'title':'I', 'feed_url':'www.i.com', 'updated':'19'}]
+Outputs:  [{'title':'A', 'feed_url':'www.a.com', 'updated':'11'}, {'title':'B', 'feed_url':'www.b.com', 'updated':'12'}, {'title':'C', 'feed_url':'www.c.com', 'updated':'13'} ..., {'title':'H', 'feed_url':'www.h.com', 'updated':'18'}, {'title':'X', 'feed_url':'www.x.com', 'updated':'24'}, {'title':'J', 'feed_url':'www.j.com', 'updated':'20'}]
+
