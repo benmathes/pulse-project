@@ -1,0 +1,74 @@
+{
+  "updateActions":
+  [
+   [
+    {
+      "title": "A",
+      "feed_url": "http://a.com",
+      "updated": 1323718735
+    },
+    {
+      "title": "B",
+      "feed_url": "http://b.com",
+      "updated": 1323711544
+    },
+    {
+      "title": "C",
+      "feed_url": "http://c.com",
+      "updated": 1323715345
+    }
+   ],
+   [
+    {
+      "title": "C",
+      "feed_url": "http://new-c.com",
+      "updated": 1323721898
+    },
+    {
+      "title": "D",
+      "feed_url": "http://d.com",
+      "updated": 1323721872
+    }
+   ],
+   [
+    {
+      "title": "B",
+      "feed_url": "http://new-b.com",
+      "updated": 1323711550
+    },
+    {
+      "title": "E",
+      "feed_url": "http://e.com",
+      "updated": 1323721879
+    }
+   ]
+  ],
+  "correctOutput":
+  [
+   {
+     "title": "A",
+     "feed_url": "http://a.com",
+     "updated": 1323718735
+   },
+   {
+     "title": "B",
+     "feed_url": "http://new-b.com",
+     "updated": 1323711550
+   },
+   {
+     "title": "C",
+     "feed_url": "http://new-c.com",
+     "updated": 1323721898
+   },
+   {
+     "title": "D",
+     "feed_url": "http://d.com",
+     "updated": 1323721872
+   },
+   {
+     "title": "E",
+     "feed_url": "http://e.com",
+     "updated": 1323721879
+   }
+  ]
+}
