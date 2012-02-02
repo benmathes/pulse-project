@@ -1,0 +1,108 @@
+++Pulse Project++
+
+Project goal: Build a simple backend api for synchronizing a list of sources across multiple devices.
+
+This project is a simplified version of the real source syncing API we built for Pulse. Feel free to sign in with your Pulse.me account and test out our implementation with two devices (or one device and the web settings page).
+
+Project details:
+- Each source should have at least a title, feed_url, and updated timestamp.
+- No authentication is required.
+- You can use the language, frameworks, tools of your choice. Input/output should be in JSON.
+- Feel free to modify/extend the example input and output formats we've provided below.
+- A simple & extensible design is preferable to a complex one.
+- Source 'updated' timestamps are updated whenever a source is touched on the client.
+- You can assume there is a master list of sources stored on the server that coordinates the syncing.
+
+Tests:
+- Please provide a simple set of test cases to exercise your api's functionality. For example: 
+Given an initial sync from device 1 containing sources: [A:http://a.com, B:http://b.com, C:http://c.com]
+followed by a sync from device 2, containing sources: [C:http://foo.com, D:http://bar.com]
+the expected result is: [A:http://a.com, B:http://b.com, C:http://foo.com, D:http://bar.com]
+
+Bonus ideas (don't try to do them all!):
+ - Support offline editing.
+ - Maintain best effort ordering of the sources as provided by the devices.
+ - Support automatic conflict resolution for offline editing (without user input).
+ - Support diff-based syncing (requires second timestamp!)
+
+Time:
+- Please don't spend more than 4 hours on this project.
+- We're not looking for a complete solution. We just want to see your thought process and a bit of your code.
+
+Example API endpoint: http://yourserver.com/api/source_sync
+
+Example Basic Test Case:
+
+
+Input 1: POST_params['sources'] =   # First sync
+[
+  {
+  'title': 'A',
+    'feed_url': 'http://a.com',
+    'updated': 1323718735
+  },
+  {
+    'title': 'B',
+    'feed_url': 'http://b.com',
+    'updated': 1323711544
+  },
+  {
+    'title': 'C',
+  'feed_url': 'http://c.com',
+    'updated': 1323715345
+  }
+]
+Input 2: POST_params['sources'] =   # Second sync
+[
+  {
+    'title': 'C',
+    'feed_url': 'http://new-c.com',
+    'updated': 1323721898
+  },
+  {
+    'title': 'D',
+    'feed_url': 'http://d.com',
+    'updated': 1323721872
+  }
+]
+Input 3: POST_params['sources'] =   # Third sync
+[
+  {
+    'title': 'B',
+    'feed_url': 'http://new-b.com',
+    'updated': 1323711550
+  },
+  {
+    'title': 'E',
+    'feed_url': 'http://e.com',
+    'updated': 1323721879
+  }
+]
+Output: RESPONSE.content = 
+[
+  {
+  'title': 'A',
+  'feed_url': 'http://a.com',
+  'updated': 1323718735, 
+  }, 
+  {
+  'title': 'B',
+  'feed_url': 'http://new-b.com',
+  'updated': 1323711550, 
+  }, 
+  {
+  'title': 'C',
+  'feed_url': 'http://new-c.com', 
+  'updated': 1323721898, 
+  }, 
+  {
+  'title': 'D',
+  'feed_url': 'http://d.com',
+  'updated': 1323721872, 
+  }, 
+  {
+  'title': 'E',
+  'feed_url': 'http://e.com', 
+  'updated': 1323721879, 
+  }
+]
