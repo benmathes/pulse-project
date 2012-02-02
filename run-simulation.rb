@@ -7,8 +7,8 @@ require 'Source.rb'
 require 'Sources.rb'
 
 # pull from the raw source
-sourceText = File.open('problem-statement/raw-source.json', 'r').read
-source = JSON.parse(sourceText)
+simExampleText = File.open('problem-statement/raw-source.json', 'r').read
+simExample = JSON.parse(simExampleText)
 
 # what we think is the canonical version (server-side). Based on the
 # problem description, it looks like feed title is the unique ID 
@@ -18,13 +18,19 @@ source = JSON.parse(sourceText)
 # maintaining an ordering
 serverSources = Sources.new() 
 
-source['updateActions'].each do |userSourceList|
+simExample['updateActions'].each do |userSourceList|
   serverSources.merge(userSourceList)
-
   # send down new list if there was a user on the other side
 
 end
 
 
-# 
-pp(serverSources)
+# verify we got it right
+correctAnswer = Sources.new(simExample['correctOutput'])
+correct = serverSources.sameAs(correctAnswer)
+if (correct)
+  puts "Success"
+else
+  puts "Failure!"
+end
+
