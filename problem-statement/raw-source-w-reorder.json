@@ -1,0 +1,109 @@
+{
+  "updateActions":
+  [
+   [
+    {
+      "title": "A",
+      "feed_url": "http://a.com",
+      "updated": 1323718735,
+      "order": 1
+    },
+    {
+      "title": "B",
+      "feed_url": "http://b.com",
+      "updated": 1323711544,
+      "order": 2
+    },
+    {
+      "title": "C",
+      "feed_url": "http://c.com",
+      "updated": 1323715345,
+      "order": 3
+    }
+   ],
+   [
+    {
+      "title": "C",
+      "feed_url": "http://new-c.com",
+      "updated": 1323721898,
+      "order": 3
+    },
+    {
+      "title": "D",
+      "feed_url": "http://d.com",
+      "updated": 1323721872,
+      "order": 4
+    }
+   ],
+   [
+    {
+      "title": "B",
+      "feed_url": "http://new-b.com",
+      "updated": 1323711550,
+      "order": 2
+    },
+    {
+      "title": "E",
+      "feed_url": "http://e.com",
+      "updated": 1323721879,
+      "order": 5
+    }
+   ],
+   [
+    {
+      "title": "E",
+      "feed_url": "http://e.com",
+      "updated": 1323731879,
+      "order": 2
+    },
+    {
+      "title": "B",
+      "feed_url": "http://new-b.com",
+      "updated": 1323731550,
+      "order": 5
+    }
+   ],
+   [
+    {
+      "title": "E",
+      "feed_url": "http://e.com",
+      "updated": 1324721879,
+      "order": 1
+    }
+   ]
+  ],
+
+  "correctOutput":
+  [
+   {
+     "title": "E",
+     "feed_url": "http://e.com",
+     "updated": 1324721879,
+     "order": 1
+   },
+   {
+     "title": "A",
+     "feed_url": "http://a.com",
+     "updated": 1323718735,
+     "order": 1
+   },
+   {
+     "title": "C",
+     "feed_url": "http://new-c.com",
+     "updated": 1323721898,
+     "order": 3
+   },
+   {
+     "title": "D",
+     "feed_url": "http://d.com",
+     "updated": 1323721872,
+     "order": 4
+   },
+   {
+     "title": "B",
+     "feed_url": "http://new-b.com",
+     "updated": 1323731550,
+     "order": 5
+   }
+  ]
+}

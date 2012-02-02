@@ -6,8 +6,23 @@ $LOAD_PATH << './'
 require 'Source.rb'
 require 'Sources.rb'
 
+require 'optparse'
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: run_simulation.rb --source [raw-source, raw-source-w-reorder]"
+  opts.on('-s [ARG]', '--source [ARG]', "Specify the source json") do |v|
+    options[:source] = v
+  end
+  opts.on('-h', '--help', 'Display this help') do 
+    puts opts
+    exit
+  end
+end.parse!
+
+
 # pull from the raw source
-simExampleText = File.open('problem-statement/raw-source.json', 'r').read
+simExampleText = File.open("problem-statement/#{options[:source]}.json", 'r').read
 simExample = JSON.parse(simExampleText)
 
 # what we think is the canonical version (server-side). Based on the
@@ -26,9 +41,7 @@ end
 
 
 # verify we got it right
-correctAnswer = Sources.new(simExample['correctOutput'])
-correct = serverSources.sameAs(correctAnswer)
-if (correct)
+if (serverSources.sameAs(Sources.new(simExample['correctOutput'])))
   puts "Success"
 else
   puts "Failure!"
