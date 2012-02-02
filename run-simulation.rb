@@ -1,6 +1,11 @@
 require 'pp' # pretty-printing
 require 'json' # data parsing
 
+# include the classes for this
+$LOAD_PATH << './'
+require 'Source.rb'
+require 'Sources.rb'
+
 # pull from the raw source
 sourceText = File.open('problem-statement/raw-source.json', 'r').read
 source = JSON.parse(sourceText)
@@ -11,23 +16,15 @@ source = JSON.parse(sourceText)
 # example format: serverSide = { "A" => { "feed_url" => "www...", "updated" => 123 } }
 # keyed on the unique attr for faster existence lookups, but this requires
 # maintaining an ordering
-serverSide = {} 
+serverSources = Sources.new() 
 
-source['updateActions'].each do |updateList|
-  updateList.each do |userSource|
+source['updateActions'].each do |userSourceList|
+  serverSources.merge(userSourceList)
 
-    # if we don't have it, add it
-    if !serverSide[userSource['title']]
-      serverSide[userSource['title']] = userSource
-    else 
-      # if we're resolving differences, compare timestamps and take the latest
-      if serverSide[userSource['title']]['updated'] < userSource['updated']
-        serverSide[userSource['title']] = userSource
-      end
-    end
+  # send down new list if there was a user on the other side
 
-  end
 end
 
 
-pp(serverSide)
+# 
+pp(serverSources)
